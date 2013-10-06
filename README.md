@@ -29,10 +29,10 @@ recording, finding, or playing back requests. Libraries using FakeXMLHttpRequest
 should provide this behavior.
 
 ## Testing
-Tests are written in [QUnit](http://qunitjs.com/) and run through the [Karam test runner](http://karma-runner.github.io/0.10/index.html). 
+Tests are written in [QUnit](http://qunitjs.com/) and run through the [Karma test runner](http://karma-runner.github.io/0.10/index.html). 
 
 Run with:
 
 ```
-karam start
+karma start
 ```
