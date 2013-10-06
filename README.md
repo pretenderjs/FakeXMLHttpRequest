@@ -1,4 +1,5 @@
-# FakeXMLHttpRequest
+# FakeXMLHttpRequest [![Build Status](https://travis-ci.org/trek/FakeXMLHttpRequest.png?branch=master)](https://travis-ci.org/trek/FakeXMLHttpRequest)
+
 This library provide a fake XMLHttpRequest object for testing browser-based libraries.
 It is partially extracted (and in many places simplified) from [Sinon.JS](http://sinonjs.org/)
 and attempts to match the behavior of [XMLHttpRequest specification](http://www.w3.org/TR/XMLHttpRequest/).
