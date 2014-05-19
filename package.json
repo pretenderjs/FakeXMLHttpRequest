@@ -4,16 +4,20 @@
   "description": "test infrastrcure for a fake XMLHttpRequest object",
   "main": "fake_xml_http_request.js",
   "scripts": {
-    "test": "./node_modules/.bin/karma start --single-run --browsers PhantomJS"
+    "test": "karma start --single-run --browsers PhantomJS"
   },
   "author": {
     "name": "Trek Glowacki"
   },
   "homepage": "https://github.com/trek/FakeXMLHttpRequest",
+  "repository": {
+    "type" : "git",
+    "url" : "http://github.com/trek/FakeXMLHttpRequest.git"
+  },
   "license": "MIT",
   "devDependencies": {
-    "qunitjs": "~1.12.0",
-    "karma-qunit": "~0.1.1",
+    "qunitjs": "1.12.0",
+    "karma-qunit": "0.1.1",
     "karma-script-launcher": "~0.1.0",
     "karma-firefox-launcher": "~0.1.0",
     "karma-chrome-launcher": "~0.1.0",
@@ -22,6 +26,8 @@
     "karma-requirejs": "~0.1.0",
     "karma-coffee-preprocessor": "~0.1.0",
     "karma-phantomjs-launcher": "~0.1.0",
-    "karma": "~0.10.2"
+    "karma": "~0.10.2",
+    "browserify": "^4.1.5",
+    "karma-browserify": "^0.2.0"
   }
 }

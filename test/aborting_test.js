@@ -1,5 +1,7 @@
+var FakeXMLHttpRequest = require('..');
+
 var xhr;
-module("aborting", {
+QUnit.module("aborting", {
   setup: function(){
     xhr = new FakeXMLHttpRequest();
   },
