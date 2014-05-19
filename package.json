@@ -1,14 +1,17 @@
 {
-  "name": "fake_xml_http_request",
+  "name": "fake-xml-http-request",
   "version": "0.0.1",
-  "description": "test infrastrcure for a fake XMLHttpRequest object",
+  "description": "test infrastructure for a fake XMLHttpRequest object",
   "main": "fake_xml_http_request.js",
   "repository": "https://github.com/trek/FakeXMLHttpRequest.git",
   "scripts": {
     "test": "karma start --single-run --browsers PhantomJS"
   },
-  "author": "",
-  "license": "BSD",
+  "author": {
+    "name": "Trek Glowacki"
+  },
+  "homepage": "https://github.com/trek/FakeXMLHttpRequest",
+  "license": "MIT",
   "devDependencies": {
     "qunitjs": "~1.14.0",
     "karma-qunit": "~0.1.1",
