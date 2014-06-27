@@ -9,7 +9,7 @@ module.exports = function(config) {
 
 
     // frameworks to use
-    frameworks: ['qunit'],
+    frameworks: ['qunit', 'browserify'],
 
 
     // list of files / patterns to load in the browser
@@ -64,6 +64,10 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun: false
+    singleRun: false,
+
+    preprocessors: {
+      'test/**/*': 'browserify'
+    }
   });
 };

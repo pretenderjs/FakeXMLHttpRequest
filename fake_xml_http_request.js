@@ -1,4 +1,3 @@
-(function(window, undefined){
 /**
  * Minimal Event interface implementation
  *
@@ -468,6 +467,8 @@ function verifyResponseBodyType(body) {
     }
 }
 
-
-window.FakeXMLHttpRequest = FakeXMLHttpRequest;
-})(window);
+if(typeof require === 'function') {
+  module.exports = FakeXMLHttpRequest;
+} else {
+  window.FakeXMLHttpRequest = FakeXMLHttpRequest;
+}

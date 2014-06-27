@@ -1,5 +1,7 @@
+var FakeXMLHttpRequest = require('..');
+
 var xhr;
-module("setting unsafe header mirrors browser behavior and throws", {
+QUnit.module("setting unsafe header mirrors browser behavior and throws", {
   setup: function(){
     xhr = new FakeXMLHttpRequest();
   },
