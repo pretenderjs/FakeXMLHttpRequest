@@ -1,6 +1,6 @@
 {
   "name": "fake_xml_http_request",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "test infrastrcure for a fake XMLHttpRequest object",
   "main": "fake_xml_http_request.js",
   "repository": "https://github.com/trek/FakeXMLHttpRequest.git",
