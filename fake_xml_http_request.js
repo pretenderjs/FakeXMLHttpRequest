@@ -470,4 +470,4 @@ function verifyResponseBodyType(body) {
 
 
 window.FakeXMLHttpRequest = FakeXMLHttpRequest;
-})(window);
+})(typeof window !== 'undefined' ? window : typeof module !== 'undefined' ? module.exports : this);
