@@ -1,4 +1,4 @@
-(function(window, undefined){
+(function(undefined){
 /**
  * Minimal Event interface implementation
  *
@@ -468,6 +468,13 @@ function verifyResponseBodyType(body) {
     }
 }
 
-
-window.FakeXMLHttpRequest = FakeXMLHttpRequest;
-})(typeof window !== 'undefined' ? window : typeof module !== 'undefined' ? module.exports : this);
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = FakeXMLHttpRequest;
+} else if (typeof define === 'function' && define.amd) {
+  define(function() { return FakeXMLHttpRequest; });
+} else if (typeof window !== 'undefined') {
+  window.FakeXMLHttpRequest = FakeXMLHttpRequest;
+} else if (this) {
+  this.FakeXMLHttpRequest = FakeXMLHttpRequest;
+}
+})();
