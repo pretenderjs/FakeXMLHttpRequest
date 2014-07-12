@@ -1,4 +1,4 @@
-(function(window, undefined){
+(function(undefined){
 /**
  * Minimal Event interface implementation
  *
@@ -75,7 +75,7 @@ var httpStatusCodes = {
 
 
 /*
-  Cross-browser XML parsing. Used to turn 
+  Cross-browser XML parsing. Used to turn
   XML responses into Document objects
   Borrowed from JSpec
 */
@@ -92,7 +92,7 @@ function parseXML(text) {
   }
 
   return xmlDoc;
-};
+}
 
 /*
   Without mocking, the native XMLHttpRequest object will throw
@@ -419,7 +419,7 @@ FakeXMLHttpRequest.prototype = {
 
     This is the public API for faking responses. This function
     takes a number status, headers object, and string body:
-    
+
     ```
     xhr.respond(404, {Content-Type: 'text/plain'}, "Sorry. This object was not found.")
 
@@ -434,7 +434,7 @@ FakeXMLHttpRequest.prototype = {
       this.onload();
     }
   }
-}
+};
 
 function verifyState(xhr) {
   if (xhr.readyState !== FakeXMLHttpRequest.OPENED) {
@@ -468,6 +468,13 @@ function verifyResponseBodyType(body) {
     }
 }
 
-
-window.FakeXMLHttpRequest = FakeXMLHttpRequest;
-})(window);
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = FakeXMLHttpRequest;
+} else if (typeof define === 'function' && define.amd) {
+  define(function() { return FakeXMLHttpRequest; });
+} else if (typeof window !== 'undefined') {
+  window.FakeXMLHttpRequest = FakeXMLHttpRequest;
+} else if (this) {
+  this.FakeXMLHttpRequest = FakeXMLHttpRequest;
+}
+})();
