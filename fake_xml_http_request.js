@@ -134,22 +134,79 @@ function _addEventListener(eventName, xhr){
   });
 }
 
+function ProgressEventTarget() {
+  this._eventListeners = {};
+  var events = ["loadstart", "progress", "load", "abort", "loadend"];
+  for (var i = 0; i < events.length; i++) {
+    _addEventListener(events[i], this);
+  }
+}
+
+ProgressEventTarget.prototype = {
+
+  /**
+   * Duplicates the behavior of native XMLHttpRequest's addEventListener function
+   */
+  addEventListener: function addEventListener(event, listener) {
+    this._eventListeners[event] = this._eventListeners[event] || [];
+    this._eventListeners[event].push(listener);
+  },
+
+  /**
+   * Duplicates the behavior of native XMLHttpRequest's removeEventListener function
+   */
+  removeEventListener: function removeEventListener(event, listener) {
+    var listeners = this._eventListeners[event] || [];
+
+    for (var i = 0, l = listeners.length; i < l; ++i) {
+      if (listeners[i] == listener) {
+        return listeners.splice(i, 1);
+      }
+    }
+  },
+
+  /**
+   * Duplicates the behavior of native XMLHttpRequest's dispatchEvent function
+   */
+  dispatchEvent: function dispatchEvent(event) {
+    var type = event.type;
+    var listeners = this._eventListeners[type] || [];
+
+    for (var i = 0; i < listeners.length; i++) {
+      if (typeof listeners[i] == "function") {
+        listeners[i].call(this, event);
+      } else {
+        listeners[i].handleEvent(event);
+      }
+    }
+
+    return !!event.defaultPrevented;
+  },
+
+  _progress: function _progress(lengthComputable, loaded, total) {
+    var event = new _Event('progress');
+    event.target = this;
+    event.lengthComputable = lengthComputable;
+    event.loaded = loaded;
+    event.total = total;
+    this.dispatchEvent(event);
+  }
+};
+
 /*
   Constructor for a fake window.XMLHttpRequest
 */
 function FakeXMLHttpRequest() {
+  ProgressEventTarget.call(this);
   this.readyState = FakeXMLHttpRequest.UNSENT;
   this.requestHeaders = {};
   this.requestBody = null;
   this.status = 0;
   this.statusText = "";
-
-  this._eventListeners = {};
-  var events = ["loadstart", "load", "abort", "loadend"];
-  for (var i = events.length - 1; i >= 0; i--) {
-    _addEventListener(events[i], this);
-  }
+  this.upload = new ProgressEventTarget();
 }
+FakeXMLHttpRequest.prototype = new ProgressEventTarget();
+
 
 
 // These status codes are available on the native XMLHttpRequest
@@ -160,7 +217,7 @@ FakeXMLHttpRequest.HEADERS_RECEIVED = 2;
 FakeXMLHttpRequest.LOADING = 3;
 FakeXMLHttpRequest.DONE = 4;
 
-FakeXMLHttpRequest.prototype = {
+FakeXMLHttpRequest.extend = {
   UNSENT: 0,
   OPENED: 1,
   HEADERS_RECEIVED: 2,
@@ -182,45 +239,6 @@ FakeXMLHttpRequest.prototype = {
     this.requestHeaders = {};
     this.sendFlag = false;
     this._readyStateChange(FakeXMLHttpRequest.OPENED);
-  },
-
-  /*
-    Duplicates the behavior of native XMLHttpRequest's addEventListener function
-  */
-  addEventListener: function addEventListener(event, listener) {
-    this._eventListeners[event] = this._eventListeners[event] || [];
-    this._eventListeners[event].push(listener);
-  },
-
-  /*
-    Duplicates the behavior of native XMLHttpRequest's removeEventListener function
-  */
-  removeEventListener: function removeEventListener(event, listener) {
-    var listeners = this._eventListeners[event] || [];
-
-    for (var i = 0, l = listeners.length; i < l; ++i) {
-      if (listeners[i] == listener) {
-        return listeners.splice(i, 1);
-      }
-    }
-  },
-
-  /*
-    Duplicates the behavior of native XMLHttpRequest's dispatchEvent function
-  */
-  dispatchEvent: function dispatchEvent(event) {
-    var type = event.type;
-    var listeners = this._eventListeners[type] || [];
-
-    for (var i = 0; i < listeners.length; i++) {
-      if (typeof listeners[i] == "function") {
-        listeners[i].call(this, event);
-      } else {
-        listeners[i].handleEvent(event);
-      }
-    }
-
-    return !!event.defaultPrevented;
   },
 
   /*
@@ -435,6 +453,10 @@ FakeXMLHttpRequest.prototype = {
     }
   }
 };
+
+for (var property in FakeXMLHttpRequest.extend) {
+  FakeXMLHttpRequest.prototype[property] = FakeXMLHttpRequest.extend[property];
+}
 
 function verifyState(xhr) {
   if (xhr.readyState !== FakeXMLHttpRequest.OPENED) {
