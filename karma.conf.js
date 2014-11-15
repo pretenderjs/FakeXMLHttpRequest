@@ -14,14 +14,14 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'fake_xml_http_request.js',
+      'dist/globals/fake_xml_http_request.js',
       'test/**/*_test.js'
     ],
 
 
     // list of files to exclude
     exclude: [
-      
+
     ],
 
 
