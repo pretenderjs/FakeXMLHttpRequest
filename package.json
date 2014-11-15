@@ -1,11 +1,13 @@
 {
   "name": "fake-xml-http-request",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "test infrastructure for a fake XMLHttpRequest object",
-  "main": "fake_xml_http_request.js",
+  "main": "dist/cjs/index.js",
   "repository": "https://github.com/trek/FakeXMLHttpRequest.git",
   "scripts": {
-    "test": "compile-modules convert builds/globals.js -o fake_xml_http_request.js && karma start --single-run --browsers PhantomJS"
+    "prepublish": "broccoli build dist",
+    "test": "compile-modules convert builds/globals.js -o fake_xml_http_request.js && karma start --single-run --browsers PhantomJS",
+    "postpublish": "rm -rf dist"
   },
   "author": {
     "name": "Trek Glowacki"
@@ -13,17 +15,21 @@
   "homepage": "https://github.com/trek/FakeXMLHttpRequest",
   "license": "MIT",
   "devDependencies": {
-    "qunitjs": "~1.14.0",
-    "karma-qunit": "~0.1.1",
-    "karma-script-launcher": "~0.1.0",
-    "karma-firefox-launcher": "~0.1.0",
+    "broccoli": "^0.13.2",
+    "broccoli-concat": "0.0.12",
+    "broccoli-es6-module-transpiler": "^0.4.0",
+    "broccoli-funnel": "^0.1.6",
+    "broccoli-merge-trees": "^0.2.1",
+    "es6-module-transpiler-amd-formatter": "^0.2.4",
+    "karma": "~0.10.2",
     "karma-chrome-launcher": "~0.1.0",
+    "karma-firefox-launcher": "~0.1.0",
     "karma-html2js-preprocessor": "~0.1.0",
     "karma-jasmine": "~0.1.3",
-    "karma-requirejs": "~0.2.0",
-    "karma-coffee-preprocessor": "~0.1.0",
     "karma-phantomjs-launcher": "~0.1.0",
-    "karma": "~0.10.2",
-    "es6-module-transpiler": "^0.9.3"
+    "karma-qunit": "~0.1.1",
+    "karma-requirejs": "~0.2.0",
+    "karma-script-launcher": "~0.1.0",
+    "qunitjs": "~1.14.0"
   }
 }
