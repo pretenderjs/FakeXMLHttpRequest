@@ -38,14 +38,14 @@ test("does not parse the body if it's XML and another content type is set", func
   equal(xhr.responseXML, undefined);
 });
 
-test("calls the onload callback", function(){
-  var wasCalled = false;
+test("calls the onload callback once", function(){
+  var wasCalled = 0;
 
   xhr.onload = function(ev){
-    wasCalled = true;
+    wasCalled += 1;
   };
 
   xhr.respond(200, {}, "");
 
-  ok(wasCalled);
+  strictEqual(wasCalled, 1);
 });
