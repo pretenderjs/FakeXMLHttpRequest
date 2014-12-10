@@ -1,5 +1,17 @@
 (function() {
     "use strict";
+    /**
+     * Minimal Event interface implementation
+     *
+     * Original implementation by Sven Fuchs: https://gist.github.com/995028
+     * Modifications and tests by Christian Johansen.
+     *
+     * @author Sven Fuchs (svenfuchs@artweb-design.de)
+     * @author Christian Johansen (christian@cjohansen.no)
+     * @license BSD
+     *
+     * Copyright (c) 2011 Sven Fuchs, Christian Johansen
+     */
 
     var $$$src$fake$xml$http$request$$_Event = function Event(type, bubbles, cancelable, target) {
       this.type = type;
@@ -419,9 +431,6 @@
         this.status = typeof status == "number" ? status : 200;
         this.statusText = $$$src$fake$xml$http$request$$httpStatusCodes[this.status];
         this._setResponseBody(body || "");
-        if (typeof this.onload === "function"){
-          this.onload();
-        }
       }
     };
 

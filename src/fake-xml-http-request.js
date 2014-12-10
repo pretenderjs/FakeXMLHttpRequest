@@ -429,9 +429,6 @@ FakeXMLHttpRequest.prototype = {
     this.status = typeof status == "number" ? status : 200;
     this.statusText = httpStatusCodes[this.status];
     this._setResponseBody(body || "");
-    if (typeof this.onload === "function"){
-      this.onload();
-    }
   }
 };
 
