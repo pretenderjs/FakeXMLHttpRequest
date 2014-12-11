@@ -37,6 +37,6 @@ Tests are written in [QUnit](http://qunitjs.com/) and run through the
 
 Run with:
 
-```
+```shell
 karma start
 ```

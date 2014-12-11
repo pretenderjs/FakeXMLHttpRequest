@@ -1,0 +1,8 @@
+test/
+src/
+lib/
+bower.json
+Brocfile
+karma.conf.js
+dist/amd
+dist/globals
