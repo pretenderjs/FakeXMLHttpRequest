@@ -133,56 +133,15 @@ function _addEventListener(eventName, xhr){
   });
 }
 
-/*
-  Constructor for a fake window.XMLHttpRequest
-*/
-function FakeXMLHttpRequest() {
-  this.readyState = FakeXMLHttpRequest.UNSENT;
-  this.requestHeaders = {};
-  this.requestBody = null;
-  this.status = 0;
-  this.statusText = "";
-
+function EventedObject() {
   this._eventListeners = {};
-  var events = ["loadstart", "load", "abort", "loadend"];
+  var events = ["loadstart", "progress", "load", "abort", "loadend"];
   for (var i = events.length - 1; i >= 0; i--) {
     _addEventListener(events[i], this);
   }
-}
+};
 
-
-// These status codes are available on the native XMLHttpRequest
-// object, so we match that here in case a library is relying on them.
-FakeXMLHttpRequest.UNSENT = 0;
-FakeXMLHttpRequest.OPENED = 1;
-FakeXMLHttpRequest.HEADERS_RECEIVED = 2;
-FakeXMLHttpRequest.LOADING = 3;
-FakeXMLHttpRequest.DONE = 4;
-
-FakeXMLHttpRequest.prototype = {
-  UNSENT: 0,
-  OPENED: 1,
-  HEADERS_RECEIVED: 2,
-  LOADING: 3,
-  DONE: 4,
-  async: true,
-
-  /*
-    Duplicates the behavior of native XMLHttpRequest's open function
-  */
-  open: function open(method, url, async, username, password) {
-    this.method = method;
-    this.url = url;
-    this.async = typeof async == "boolean" ? async : true;
-    this.username = username;
-    this.password = password;
-    this.responseText = null;
-    this.responseXML = null;
-    this.requestHeaders = {};
-    this.sendFlag = false;
-    this._readyStateChange(FakeXMLHttpRequest.OPENED);
-  },
-
+EventedObject.prototype = {
   /*
     Duplicates the behavior of native XMLHttpRequest's addEventListener function
   */
@@ -220,6 +179,66 @@ FakeXMLHttpRequest.prototype = {
     }
 
     return !!event.defaultPrevented;
+  },
+
+  /*
+    Triggers an `onprogress` event with the given parameters.
+  */
+  _progress: function _progress(lengthComputable, loaded, total) {
+    var event = new _Event('progress');
+    event.target = this;
+    event.lengthComputable = lengthComputable;
+    event.loaded = loaded;
+    event.total = total;
+    this.dispatchEvent(event);
+  }
+}
+
+/*
+  Constructor for a fake window.XMLHttpRequest
+*/
+function FakeXMLHttpRequest() {
+  EventedObject.call(this);
+  this.readyState = FakeXMLHttpRequest.UNSENT;
+  this.requestHeaders = {};
+  this.requestBody = null;
+  this.status = 0;
+  this.statusText = "";
+  this.upload = new EventedObject();
+}
+
+FakeXMLHttpRequest.prototype = new EventedObject();
+
+// These status codes are available on the native XMLHttpRequest
+// object, so we match that here in case a library is relying on them.
+FakeXMLHttpRequest.UNSENT = 0;
+FakeXMLHttpRequest.OPENED = 1;
+FakeXMLHttpRequest.HEADERS_RECEIVED = 2;
+FakeXMLHttpRequest.LOADING = 3;
+FakeXMLHttpRequest.DONE = 4;
+
+var FakeXMLHttpRequestProto = {
+  UNSENT: 0,
+  OPENED: 1,
+  HEADERS_RECEIVED: 2,
+  LOADING: 3,
+  DONE: 4,
+  async: true,
+
+  /*
+    Duplicates the behavior of native XMLHttpRequest's open function
+  */
+  open: function open(method, url, async, username, password) {
+    this.method = method;
+    this.url = url;
+    this.async = typeof async == "boolean" ? async : true;
+    this.username = username;
+    this.password = password;
+    this.responseText = null;
+    this.responseXML = null;
+    this.requestHeaders = {};
+    this.sendFlag = false;
+    this._readyStateChange(FakeXMLHttpRequest.OPENED);
   },
 
   /*
@@ -371,8 +390,6 @@ FakeXMLHttpRequest.prototype = {
     }
   },
 
-
-
   /*
     Sets the FakeXMLHttpRequest object's response body and
     if body text is XML, sets responseXML to parsed document
@@ -431,6 +448,10 @@ FakeXMLHttpRequest.prototype = {
     this._setResponseBody(body || "");
   }
 };
+
+for (var property in FakeXMLHttpRequestProto) {
+  FakeXMLHttpRequest.prototype[property] = FakeXMLHttpRequestProto[property];
+}
 
 function verifyState(xhr) {
   if (xhr.readyState !== FakeXMLHttpRequest.OPENED) {
