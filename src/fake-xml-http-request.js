@@ -224,6 +224,7 @@ var FakeXMLHttpRequestProto = {
   LOADING: 3,
   DONE: 4,
   async: true,
+  withCredentials: false,
 
   /*
     Duplicates the behavior of native XMLHttpRequest's open function
