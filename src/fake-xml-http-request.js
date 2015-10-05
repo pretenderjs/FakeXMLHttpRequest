@@ -265,11 +265,8 @@ var FakeXMLHttpRequestProto = {
     verifyState(this);
 
     if (!/^(get|head)$/i.test(this.method)) {
-      if (this.requestHeaders["Content-Type"]) {
-        var value = this.requestHeaders["Content-Type"].split(";");
-        this.requestHeaders["Content-Type"] = value[0] + ";charset=utf-8";
-      } else {
-        this.requestHeaders["Content-Type"] = "text/plain;charset=utf-8";
+      if (!this.requestHeaders["Content-Type"]) {
+        this.requestHeaders["Content-Type"] = "text/plain;charset=UTF-8";
       }
 
       this.requestBody = data;
