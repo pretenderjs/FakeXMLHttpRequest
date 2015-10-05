@@ -1,12 +1,35 @@
-var xhr;
+var xhr, xmlDocumentConstructor;
 module("responding", {
   setup: function(){
     xhr = new FakeXMLHttpRequest();
+    xmlDocumentConstructor = makeXMLDocument().constructor;
   },
   teardown: function(){
     xhr = undefined;
+    xmlDocumentConstructor = undefined;
   }
 });
+
+// Different browsers report different constructors for XML Documents.
+// Chrome 45.0.2454 and Firefox 40.0.0 report `XMLDocument`,
+// PhantomJS 1.9.8 reports `Document`.
+// Make a dummy xml document to determine what constructor to
+// compare against in the tests below.
+// This function is taken from `parseXML` in the src/
+function makeXMLDocument() {
+  var xmlDoc, text = "<some>xml</some>";
+
+  if (typeof DOMParser != "undefined") {
+    var parser = new DOMParser();
+    xmlDoc = parser.parseFromString(text, "text/xml");
+  } else {
+    xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+    xmlDoc.async = "false";
+    xmlDoc.loadXML(text);
+  }
+
+  return xmlDoc;
+}
 
 test("defaults responseHeaders to {} if not passed", function(){
   xhr.respond(200);
@@ -25,12 +48,12 @@ test("sets body", function(){
 
 test("parses the body if it's XML and no content-type is set", function(){
   xhr.respond(200, {}, "<key>value</key>");
-  equal(xhr.responseXML.constructor, Document);
+  equal(xhr.responseXML.constructor, xmlDocumentConstructor);
 });
 
 test("parses the body if it's XML and xml content type is set", function(){
   xhr.respond(200, {'Content-Type':'application/xml'}, "<key>value</key>");
-  equal(xhr.responseXML.constructor, Document);
+  equal(xhr.responseXML.constructor, xmlDocumentConstructor);
 });
 
 test("does not parse the body if it's XML and another content type is set", function(){
