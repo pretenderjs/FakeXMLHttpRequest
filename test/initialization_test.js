@@ -27,3 +27,7 @@ test("status is 0", function(){
 test("statusText is empty", function(){
   equal(xhr.status, '');
 });
+
+test("withCredentials is false", function(){
+  equal(xhr.withCredentials, false);
+});
