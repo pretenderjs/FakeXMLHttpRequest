@@ -22,3 +22,10 @@ test("does not change Content-Type if explicitly set for non-GET/HEAD", function
   equal(xhr.requestHeaders["Content-Type"], "application/json",
         "does not change existing content-type header");
 });
+
+test("does not set Content-Type if data is FormData object", function(){
+  xhr.open("POST", "/");
+  xhr.send(new FormData());
+  equal(xhr.requestHeaders["Content-Type"], null,
+        "does not set content-type header for FormData POSTs");
+});
