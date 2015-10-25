@@ -356,7 +356,7 @@ var FakeXMLHttpRequestProto = {
     this.readyState = state;
 
     if (typeof this.onreadystatechange == "function") {
-      this.onreadystatechange();
+      this.onreadystatechange(new _Event("readystatechange"));
     }
 
     this.dispatchEvent(new _Event("readystatechange"));

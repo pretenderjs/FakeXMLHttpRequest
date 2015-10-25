@@ -59,14 +59,14 @@ test("open sets the ready state to 1", function(){
   equal(xhr.readyState, 1)
 });
 
-test("triggers the onreadystatechange event", function(){
-  var wasCalled = false;
+test("triggers the onreadystatechange event with OPENED readyState", function(){
+  var readyState = null;
 
   xhr.onreadystatechange = function(){
-    wasCalled = true;
-  }
+    readyState = this.readyState;
+  };
 
   xhr.open('get', '/some/url');
 
-  ok(wasCalled);
+  equal(readyState, FakeXMLHttpRequest.OPENED);
 });
