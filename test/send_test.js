@@ -22,5 +22,3 @@ test("does not change Content-Type if explicitly set for non-GET/HEAD", function
   equal(xhr.requestHeaders["Content-Type"], "application/json",
         "does not change existing content-type header");
 });
-
-

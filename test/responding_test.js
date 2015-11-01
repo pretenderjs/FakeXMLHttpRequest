@@ -72,3 +72,35 @@ test("calls the onload callback once", function(){
 
   strictEqual(wasCalled, 1);
 });
+
+test("calls onreadystatechange for each state change", function() {
+  var states = [];
+
+  xhr.onreadystatechange = function() {
+    states.push(this.readyState);
+  };
+
+  xhr.open('get', '/some/url');
+
+  xhr.respond(200, {}, "");
+
+  var expectedStates = [
+    FakeXMLHttpRequest.OPENED,
+    FakeXMLHttpRequest.HEADERS_RECEIVED,
+    FakeXMLHttpRequest.LOADING,
+    FakeXMLHttpRequest.DONE
+  ];
+  deepEqual(states, expectedStates);
+});
+
+test("passes event to onreadystatechange", function() {
+  var event = null;
+  xhr.onreadystatechange = function(e) {
+    event = e;
+  };
+  xhr.open('get', '/some/url');
+  xhr.respond(200, {}, "");
+
+  ok(event && event.type === 'readystatechange',
+     'passes event with type "readystatechange"');
+});
