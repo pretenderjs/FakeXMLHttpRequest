@@ -1,6 +1,6 @@
 {
   "name": "fake-xml-http-request",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "main": [
     "./fake_xml_http_request.js"
   ]
