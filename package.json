@@ -19,5 +19,8 @@
     "karma-firefox-launcher": "~0.1.4",
     "karma-phantomjs-launcher": "~0.1.4",
     "karma-qunit": "~0.1.4"
+  },
+  "jspm": {
+    "format": "global"
   }
 }
