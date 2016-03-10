@@ -104,3 +104,21 @@ test("passes event to onreadystatechange", function() {
   ok(event && event.type === 'readystatechange',
      'passes event with type "readystatechange"');
 });
+
+test("overrideMimeType overrides content-type responseHeader", function(){
+  xhr.overrideMimeType('text/plain');
+  xhr.respond(200, {"Content-Type":"application/json"});
+  deepEqual(xhr.responseHeaders, {"Content-Type":"text/plain"});
+});
+
+test("parses the body if it's XML and overrideMimeType is set to xml", function(){
+  xhr.overrideMimeType('application/xml');
+  xhr.respond(200, {'Content-Type':'text/plain'}, "<key>value</key>");
+  equal(xhr.responseXML.constructor, xmlDocumentConstructor);
+});
+
+test("does not parse the body if it's XML and overrideMimeType is set to another content type", function(){
+  xhr.overrideMimeType('text/plain');
+  xhr.respond(200, {'Content-Type':'application/xml'}, "<key>value</key>");
+  equal(xhr.responseXML, undefined);
+});

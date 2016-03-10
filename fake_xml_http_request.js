@@ -355,6 +355,16 @@
     },
 
     /*
+     Duplicates the behavior of native XMLHttpRequest's overrideMimeType function
+     */
+    overrideMimeType: function overrideMimeType(mimeType) {
+      if (typeof mimeType === "string") {
+        this.forceMimeType = mimeType.toLowerCase();
+      }
+    },
+
+
+    /*
       Places a FakeXMLHttpRequest object into the passed
       state.
     */
@@ -385,6 +395,10 @@
         if (headers.hasOwnProperty(header)) {
             this.responseHeaders[header] = headers[header];
         }
+      }
+
+      if (this.forceMimeType) {
+        this.responseHeaders['Content-Type'] = this.forceMimeType;
       }
 
       if (this.async) {
