@@ -178,7 +178,7 @@ EventedObject.prototype = {
       }
     }
 
-    return !!event.defaultPrevented;
+    return !event.defaultPrevented;
   },
 
   /*
