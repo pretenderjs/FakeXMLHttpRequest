@@ -134,7 +134,7 @@
       var listener = xhr["on" + eventName];
 
       if (listener && typeof listener == "function") {
-        listener(event);
+        listener.call(event.target, event);
       }
     });
   }
