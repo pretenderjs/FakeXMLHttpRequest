@@ -272,7 +272,7 @@
       verifyState(this);
 
       if (!/^(get|head)$/i.test(this.method)) {
-        if (!this.requestHeaders["Content-Type"] && !(data || '').toString().match('FormData')) {
+        if (!this.requestHeaders["Content-Type"] && !this.requestHeaders["content-type"] && !(data || '').toString().match('FormData')) {
           this.requestHeaders["Content-Type"] = "text/plain;charset=UTF-8";
         }
 
