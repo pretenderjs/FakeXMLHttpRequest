@@ -447,6 +447,12 @@
         } catch (e) {
           // Unable to parse XML - no biggie
         }
+      } else if(this.responseText && /(application\/json)|(application\/vnd\.api\+json)/.test(type)) {
+        try {
+          this.response = JSON.parse(this.responseText);
+        } catch (e) {
+          // Unable to parse JSON - no biggie
+        }
       }
 
       if (this.async) {
