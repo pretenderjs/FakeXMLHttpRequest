@@ -39,7 +39,7 @@ test("does not set Content-Type if CoNtEnT-tYpE explicitly set for non-GET/HEAD"
   xhr.send("data");
   equal(xhr.requestHeaders["CoNtEnT-tYpE"], "application/json",
         "does not change existing content-type header");
-  equal(xhr.requestHeaders["CoNtEnT-tYpE"], undefined,
+  equal(xhr.requestHeaders["Content-Type"], undefined,
         "does not add Content-Type header");
 });
 

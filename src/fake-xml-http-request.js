@@ -266,7 +266,15 @@ var FakeXMLHttpRequestProto = {
     verifyState(this);
 
     if (!/^(get|head)$/i.test(this.method)) {
-      if (!this.requestHeaders["Content-Type"] && !(data || '').toString().match('FormData')) {
+      var hasContentTypeHeader = false
+
+      Object.keys(this.requestHeaders).forEach(function (key) {
+        if (key.toLowerCase() === 'content-type') {
+          hasContentTypeHeader = true;
+        }
+      });
+
+      if (!hasContentTypeHeader && !(data || '').toString().match('FormData')) {
         this.requestHeaders["Content-Type"] = "text/plain;charset=UTF-8";
       }
 
