@@ -73,6 +73,20 @@ test("calls the onload callback once", function(){
   strictEqual(wasCalled, 1);
 });
 
+test("passes event target as context to onload", function() {
+  var context;
+  var event;
+
+  xhr.onload = function(ev){
+    event = ev;
+    context = this;
+  };
+
+  xhr.respond(200, {}, "");
+
+  deepEqual(context, event.target);
+});
+
 test("calls onreadystatechange for each state change", function() {
   var states = [];
 
