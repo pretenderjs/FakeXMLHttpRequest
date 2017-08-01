@@ -100,6 +100,18 @@ test("passes event target as context to onload", function() {
   deepEqual(context, event.target);
 });
 
+test("event currentTarget matches event target", function() {
+  var event;
+
+  xhr.onload = function(ev){
+    event = ev;
+  };
+
+  xhr.respond(200, {}, "");
+
+  strictEqual(event.currentTarget, event.target);
+});
+
 test("calls onreadystatechange for each state change", function() {
   var states = [];
 
@@ -122,6 +134,7 @@ test("calls onreadystatechange for each state change", function() {
 
 test("passes event to onreadystatechange", function() {
   var event = null;
+
   xhr.onreadystatechange = function(e) {
     event = e;
   };
@@ -130,6 +143,9 @@ test("passes event to onreadystatechange", function() {
 
   ok(event && event.type === 'readystatechange',
      'passes event with type "readystatechange"');
+  strictEqual(xhr, event.target, 'event target is the xhr object');
+  strictEqual(event.target, event.currentTarget,
+    'event currentTarget matches event target');
 });
 
 test("overrideMimeType overrides content-type responseHeader", function(){
