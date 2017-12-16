@@ -18,7 +18,7 @@ number, a headers object, and a text response body:
 // simulate successful response
 import FakeXMLHttpRequest from "fake-xml-http-request";
 
-xhr = new FakeXMLHttpRequest();
+let xhr = new FakeXMLHttpRequest();
 xhr.respond(200, {"Content-Type": "application/json"}, '{"key":"value"}');
 xhr.status; // 200
 xhr.statusText; // "OK"
