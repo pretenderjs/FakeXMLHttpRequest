@@ -1,34 +1,7 @@
-/**
- * Minimal Event interface implementation
- *
- * Original implementation by Sven Fuchs: https://gist.github.com/995028
- * Modifications and tests by Christian Johansen.
- *
- * @author Sven Fuchs (svenfuchs@artweb-design.de)
- * @author Christian Johansen (christian@cjohansen.no)
- * @license BSD
- *
- * Copyright (c) 2011 Sven Fuchs, Christian Johansen
- */
-
-var _Event = function Event(type, bubbles, cancelable, target) {
-  this.type = type;
-  this.bubbles = bubbles;
-  this.cancelable = cancelable;
-  this.target = target;
-};
-
-_Event.prototype = {
-  stopPropagation: function () {},
-  preventDefault: function () {
-    this.defaultPrevented = true;
-  }
-};
-
 /*
   Used to set the statusText property of an xhr object
 */
-var httpStatusCodes = {
+const httpStatusCodes: { [k:number]: string } = {
   100: "Continue",
   101: "Switching Protocols",
   200: "OK",
@@ -72,32 +45,11 @@ var httpStatusCodes = {
   505: "HTTP Version Not Supported"
 };
 
-
-/*
-  Cross-browser XML parsing. Used to turn
-  XML responses into Document objects
-  Borrowed from JSpec
-*/
-function parseXML(text) {
-  var xmlDoc;
-
-  if (typeof DOMParser != "undefined") {
-    var parser = new DOMParser();
-    xmlDoc = parser.parseFromString(text, "text/xml");
-  } else {
-    xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-    xmlDoc.async = "false";
-    xmlDoc.loadXML(text);
-  }
-
-  return xmlDoc;
-}
-
 /*
   Without mocking, the native XMLHttpRequest object will throw
   an error when attempting to set these headers. We match this behavior.
 */
-var unsafeHeaders = {
+const unsafeHeaders = {
   "Accept-Charset": true,
   "Accept-Encoding": true,
   "Connection": true,
@@ -118,13 +70,61 @@ var unsafeHeaders = {
   "Via": true
 };
 
+export interface FakeEventInit extends EventInit {
+  target?: any
+}
+
+export class FakeEvent {
+  readonly type: string;
+  readonly bubbles: boolean;
+  readonly cancelable: boolean;
+  cancelBubble = false
+  defaultPrevented = false
+  lengthComputable: number
+  total: number
+  loaded: boolean
+  target: any = null;
+
+  constructor(type: string, { bubbles = false, cancelable = false, target = null }: FakeEventInit = {}) {
+    this.type = type;
+    this.bubbles = bubbles;
+    this.cancelable = cancelable;
+    this.target = target;
+  }
+
+  stopPropagation() {}
+  preventDefault() {
+    this.defaultPrevented = true;
+  }
+}
+
+/*
+  Cross-browser XML parsing. Used to turn
+  XML responses into Document objects
+  Borrowed from JSpec
+*/
+function parseXML(text: string): XMLDocument {
+  var xmlDoc;
+
+  if (typeof DOMParser != "undefined") {
+    var parser = new DOMParser();
+    xmlDoc = parser.parseFromString(text, "text/xml");
+  } else {
+    xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+    xmlDoc.async = "false";
+    xmlDoc.loadXML(text);
+  }
+
+  return xmlDoc;
+}
+
 /*
   Adds an "event" onto the fake xhr object
   that just calls the same-named method. This is
   in case a library adds callbacks for these events.
 */
-function _addEventListener(eventName, xhr){
-  xhr.addEventListener(eventName, function (event) {
+function _addEventListener(eventName: string, xhr: any){
+  xhr.addEventListener(eventName, function(event: FakeEvent) {
     var listener = xhr["on" + eventName];
 
     if (listener && typeof listener == "function") {
@@ -133,59 +133,64 @@ function _addEventListener(eventName, xhr){
   });
 }
 
-function EventedObject() {
-  this._eventListeners = {};
-  var events = ["loadstart", "progress", "load", "abort", "loadend"];
-  for (var i = events.length - 1; i >= 0; i--) {
-    _addEventListener(events[i], this);
+type EventHandlerObject = { handleEvent: Function }
+interface EventsListenersMap {
+  [k: string]: (EventHandlerObject | Function)[];
+}
+export class EventedObject {
+  private eventListeners: EventsListenersMap = {}
+  constructor() {
+    let eventNames = ["loadstart", "progress", "load", "abort", "loadend"];
+    for (let i = eventNames.length - 1; i >= 0; i--) {
+      _addEventListener(eventNames[i], this);
+    }
   }
-};
 
-EventedObject.prototype = {
   /*
     Duplicates the behavior of native XMLHttpRequest's addEventListener function
   */
-  addEventListener: function addEventListener(event, listener) {
-    this._eventListeners[event] = this._eventListeners[event] || [];
-    this._eventListeners[event].push(listener);
-  },
+  addEventListener(event: string, listener: Function) {
+    this.eventListeners[event] = this.eventListeners[event] || [];
+    this.eventListeners[event].push(listener);
+  }
 
   /*
     Duplicates the behavior of native XMLHttpRequest's removeEventListener function
   */
-  removeEventListener: function removeEventListener(event, listener) {
-    var listeners = this._eventListeners[event] || [];
+  removeEventListener(event: string, listener: Function) {
+    var listeners = this.eventListeners[event] || [];
 
-    for (var i = 0, l = listeners.length; i < l; ++i) {
+    for (var i = 0, l = listeners.length; i <l; ++i) {
       if (listeners[i] == listener) {
-        return listeners.splice(i, 1);
+        listeners.splice(i, 1);
+        break;
       }
     }
-  },
+  }
 
   /*
     Duplicates the behavior of native XMLHttpRequest's dispatchEvent function
   */
-  dispatchEvent: function dispatchEvent(event) {
+  dispatchEvent(event: { type: string, [k: string]: any }) {
     var type = event.type;
-    var listeners = this._eventListeners[type] || [];
+    var listeners = this.eventListeners[type] || [];
 
     for (var i = 0; i < listeners.length; i++) {
-      if (typeof listeners[i] == "function") {
-        listeners[i].call(this, event);
+      if (typeof listeners[i] === "function") {
+        (<Function>listeners[i]).call(this, event);
       } else {
-        listeners[i].handleEvent(event);
+        (<EventHandlerObject>listeners[i]).handleEvent(event);
       }
     }
 
     return !!event.defaultPrevented;
-  },
+  }
 
   /*
     Triggers an `onprogress` event with the given parameters.
   */
-  _progress: function _progress(lengthComputable, loaded, total) {
-    var event = new _Event('progress');
+  _progress(lengthComputable: number, loaded: boolean, total: number) {
+    var event = new FakeEvent('progress');
     event.target = this;
     event.lengthComputable = lengthComputable;
     event.loaded = loaded;
@@ -194,76 +199,82 @@ EventedObject.prototype = {
   }
 }
 
+export interface FakeHeaders {
+  [key: string]: any
+}
+
 /*
   Constructor for a fake window.XMLHttpRequest
 */
-function FakeXMLHttpRequest() {
-  EventedObject.call(this);
-  this.readyState = FakeXMLHttpRequest.UNSENT;
-  this.requestHeaders = {};
-  this.requestBody = null;
-  this.status = 0;
-  this.statusText = "";
-  this.upload = new EventedObject();
-}
+class FakeXMLHttpRequest extends EventedObject {
+  static UNSENT = 0
+  static OPENED = 1
+  static HEADERS_RECEIVED = 2
+  static LOADING = 3
+  static DONE = 4
 
-FakeXMLHttpRequest.prototype = new EventedObject();
+  readyState: number = FakeXMLHttpRequest.UNSENT
+  requestHeaders: FakeHeaders = {}
+  responseHeaders?: FakeHeaders
+  requestBody: any = null
+  status: number = 0
+  statusText: string = ""
+  upload = new EventedObject()
+  async = true
+  method: string
+  url: string
+  username?: string
+  password?: string
+  withCredentials = false
+  responseText: string | null = null
+  responseXML: XMLDocument | null = null
+  sendFlag = false
+  errorFlag = false;
+  aborted = false;
+  onSend?: Function
+  onerror?: Function
+  onload?: (e: FakeEvent) => void
+  onreadystatechange?: (e: FakeEvent) => void
+  private forceMimeType?: string
+  private chunkSize?: number
 
-// These status codes are available on the native XMLHttpRequest
-// object, so we match that here in case a library is relying on them.
-FakeXMLHttpRequest.UNSENT = 0;
-FakeXMLHttpRequest.OPENED = 1;
-FakeXMLHttpRequest.HEADERS_RECEIVED = 2;
-FakeXMLHttpRequest.LOADING = 3;
-FakeXMLHttpRequest.DONE = 4;
-
-var FakeXMLHttpRequestProto = {
-  UNSENT: 0,
-  OPENED: 1,
-  HEADERS_RECEIVED: 2,
-  LOADING: 3,
-  DONE: 4,
-  async: true,
-  withCredentials: false,
 
   /*
     Duplicates the behavior of native XMLHttpRequest's open function
   */
-  open: function open(method, url, async, username, password) {
+  open(method: string, url: string, async?: any, username?: string, password?: string) {
     this.method = method;
     this.url = url;
-    this.async = typeof async == "boolean" ? async : true;
+    if (typeof async === 'boolean') {
+      this.async = async;
+    }
     this.username = username;
     this.password = password;
-    this.responseText = null;
-    this.responseXML = null;
-    this.requestHeaders = {};
-    this.sendFlag = false;
     this._readyStateChange(FakeXMLHttpRequest.OPENED);
-  },
+  }
 
   /*
     Duplicates the behavior of native XMLHttpRequest's setRequestHeader function
   */
-  setRequestHeader: function setRequestHeader(header, value) {
-    verifyState(this);
+  setRequestHeader(header: string, value: string) {
+    this._verifyState();
 
-    if (unsafeHeaders[header] || /^(Sec-|Proxy-)/.test(header)) {
+    if (unsafeHeaders.hasOwnProperty(header) || /^(Sec-|Proxy-)/.test(header)) {
       throw new Error("Refused to set unsafe header \"" + header + "\"");
     }
 
-    if (this.requestHeaders[header]) {
+    if (this.requestHeaders[header] !== undefined) {
       this.requestHeaders[header] += "," + value;
     } else {
       this.requestHeaders[header] = value;
     }
-  },
+  }
 
   /*
     Duplicates the behavior of native XMLHttpRequest's send function
   */
-  send: function send(data) {
-    verifyState(this);
+  send(data: any) {
+    this._verifyState();
 
     if (!/^(get|head)$/i.test(this.method)) {
       var hasContentTypeHeader = false
@@ -289,13 +300,13 @@ var FakeXMLHttpRequestProto = {
       this.onSend(this);
     }
 
-    this.dispatchEvent(new _Event("loadstart", false, false, this));
-  },
+    this.dispatchEvent(new FakeEvent("loadstart", { bubbles: false, cancelable: false, target: this }));
+  }
 
   /*
     Duplicates the behavior of native XMLHttpRequest's abort function
   */
-  abort: function abort() {
+  abort() {
     this.aborted = true;
     this.responseText = null;
     this.errorFlag = true;
@@ -308,94 +319,97 @@ var FakeXMLHttpRequestProto = {
 
     this.readyState = FakeXMLHttpRequest.UNSENT;
 
-    this.dispatchEvent(new _Event("abort", false, false, this));
+    this.dispatchEvent(new FakeEvent("abort", { bubbles: false, cancelable: false, target: this }));
     if (typeof this.onerror === "function") {
-        this.onerror();
+      this.onerror();
     }
-  },
+  }
 
   /*
     Duplicates the behavior of native XMLHttpRequest's getResponseHeader function
   */
-  getResponseHeader: function getResponseHeader(header) {
+  getResponseHeader(headerName: string) {
     if (this.readyState < FakeXMLHttpRequest.HEADERS_RECEIVED) {
       return null;
     }
 
-    if (/^Set-Cookie2?$/i.test(header)) {
+    if (/^Set-Cookie2?$/i.test(headerName)) {
       return null;
     }
 
-    header = header.toLowerCase();
+    headerName = headerName.toLowerCase();
 
-    for (var h in this.responseHeaders) {
-      if (h.toLowerCase() == header) {
-        return this.responseHeaders[h];
+    if (this.responseHeaders) {
+      for (var h in this.responseHeaders) {
+        if (h.toLowerCase() == headerName) {
+          return this.responseHeaders[h];
+        }
       }
     }
 
     return null;
-  },
+  }
 
   /*
     Duplicates the behavior of native XMLHttpRequest's getAllResponseHeaders function
   */
-  getAllResponseHeaders: function getAllResponseHeaders() {
+  getAllResponseHeaders() {
     if (this.readyState < FakeXMLHttpRequest.HEADERS_RECEIVED) {
       return "";
     }
 
     var headers = "";
-
-    for (var header in this.responseHeaders) {
-      if (this.responseHeaders.hasOwnProperty(header) && !/^Set-Cookie2?$/i.test(header)) {
-        headers += header + ": " + this.responseHeaders[header] + "\r\n";
+    if (this.responseHeaders) {
+      for (var header in this.responseHeaders) {
+        if (this.responseHeaders.hasOwnProperty(header) && !/^Set-Cookie2?$/i.test(header)) {
+          headers += header + ": " + this.responseHeaders[header] + "\r\n";
+        }
       }
     }
 
     return headers;
-  },
+  }
 
   /*
-   Duplicates the behavior of native XMLHttpRequest's overrideMimeType function
-   */
-  overrideMimeType: function overrideMimeType(mimeType) {
+  Duplicates the behavior of native XMLHttpRequest's overrideMimeType function
+  */
+  overrideMimeType(mimeType: any) {
     if (typeof mimeType === "string") {
       this.forceMimeType = mimeType.toLowerCase();
     }
-  },
+  }
 
 
   /*
     Places a FakeXMLHttpRequest object into the passed
     state.
   */
-  _readyStateChange: function _readyStateChange(state) {
+  _readyStateChange(state: number) {
     this.readyState = state;
 
     if (typeof this.onreadystatechange == "function") {
-      this.onreadystatechange(new _Event("readystatechange"));
+      this.onreadystatechange(new FakeEvent("readystatechange"));
     }
 
-    this.dispatchEvent(new _Event("readystatechange"));
+    this.dispatchEvent(new FakeEvent("readystatechange"));
 
     if (this.readyState == FakeXMLHttpRequest.DONE) {
-      this.dispatchEvent(new _Event("load", false, false, this));
-      this.dispatchEvent(new _Event("loadend", false, false, this));
+      this.dispatchEvent(new FakeEvent("load", { bubbles: false, cancelable: false, target: this }));
+      this.dispatchEvent(new FakeEvent("loadend", { bubbles: false, cancelable: false, target: this }));
     }
-  },
+  }
 
 
   /*
     Sets the FakeXMLHttpRequest object's response headers and
     places the object into readyState 2
   */
-  _setResponseHeaders: function _setResponseHeaders(headers) {
+  _setResponseHeaders(headers: FakeHeaders) {
     this.responseHeaders = {};
 
     for (var header in headers) {
       if (headers.hasOwnProperty(header)) {
-          this.responseHeaders[header] = headers[header];
+        this.responseHeaders[header] = headers[header];
       }
     }
 
@@ -408,16 +422,16 @@ var FakeXMLHttpRequestProto = {
     } else {
       this.readyState = FakeXMLHttpRequest.HEADERS_RECEIVED;
     }
-  },
+  }
 
   /*
     Sets the FakeXMLHttpRequest object's response body and
     if body text is XML, sets responseXML to parsed document
     object
   */
-  _setResponseBody: function _setResponseBody(body) {
-    verifyRequestSent(this);
-    verifyHeadersReceived(this);
+  _setResponseBody(body: string) {
+    this._verifyRequestSent();
+    this._verifyHeadersReceived();
     verifyResponseBodyType(body);
 
     var chunkSize = this.chunkSize || 10;
@@ -448,7 +462,7 @@ var FakeXMLHttpRequestProto = {
     } else {
       this.readyState = FakeXMLHttpRequest.DONE;
     }
-  },
+  }
 
   /*
     Forces a response on to the FakeXMLHttpRequest object.
@@ -461,47 +475,47 @@ var FakeXMLHttpRequestProto = {
 
     ```
   */
-  respond: function respond(status, headers, body) {
-    this._setResponseHeaders(headers || {});
-    this.status = typeof status == "number" ? status : 200;
+  respond(status: number = 200, headers: FakeHeaders = {}, body = "") {
+    this._setResponseHeaders(headers);
+    this.status = status;
     this.statusText = httpStatusCodes[this.status];
-    this._setResponseBody(body || "");
-  }
-};
-
-for (var property in FakeXMLHttpRequestProto) {
-  FakeXMLHttpRequest.prototype[property] = FakeXMLHttpRequestProto[property];
-}
-
-function verifyState(xhr) {
-  if (xhr.readyState !== FakeXMLHttpRequest.OPENED) {
-    throw new Error("INVALID_STATE_ERR");
+    this._setResponseBody(body);
   }
 
-  if (xhr.sendFlag) {
-    throw new Error("INVALID_STATE_ERR");
+  private _verifyState() {
+    if (this.readyState !== FakeXMLHttpRequest.OPENED) {
+      throw new Error("INVALID_STATE_ERR");
+    }
+
+    if (this.sendFlag) {
+      throw new Error("INVALID_STATE_ERR");
+    }
+  }
+
+  private _verifyRequestSent() {
+    if (this.readyState == FakeXMLHttpRequest.DONE) {
+      throw new Error("Request done");
+    }
+  }
+
+  private _verifyHeadersReceived() {
+    if (this.async && this.readyState != FakeXMLHttpRequest.HEADERS_RECEIVED) {
+      throw new Error("No headers received");
+    }
   }
 }
 
+// for (var property in FakeXMLHttpRequestProto) {
+//   FakeXMLHttpRequest.prototype[property] = FakeXMLHttpRequestProto[property];
+// }
 
-function verifyRequestSent(xhr) {
-    if (xhr.readyState == FakeXMLHttpRequest.DONE) {
-        throw new Error("Request done");
-    }
+function verifyResponseBodyType(body: any) {
+  if (typeof body !== "string") {
+    var error = new Error("Attempted to respond to fake XMLHttpRequest with " +
+      body + ", which is not a string.");
+    error.name = "InvalidBodyException";
+    throw error;
+  }
 }
 
-function verifyHeadersReceived(xhr) {
-    if (xhr.async && xhr.readyState != FakeXMLHttpRequest.HEADERS_RECEIVED) {
-        throw new Error("No headers received");
-    }
-}
-
-function verifyResponseBodyType(body) {
-    if (typeof body != "string") {
-        var error = new Error("Attempted to respond to fake XMLHttpRequest with " +
-                             body + ", which is not a string.");
-        error.name = "InvalidBodyException";
-        throw error;
-    }
-}
 export default FakeXMLHttpRequest;
