@@ -160,12 +160,10 @@ export class EventedObject {
   removeEventListener(event: string, listener: Function) {
     var listeners = this.eventListeners[event] || [];
 
-    for (var i = 0, l = listeners.length; i <
-
-
-      l; ++i) {
+    for (var i = 0, l = listeners.length; i <l; ++i) {
       if (listeners[i] == listener) {
-        return listeners.splice(i, 1);
+        listeners.splice(i, 1);
+        break;
       }
     }
   }

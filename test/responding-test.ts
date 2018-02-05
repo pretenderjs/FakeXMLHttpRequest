@@ -1,4 +1,4 @@
-import FakeXMLHttpRequest, { FakeEvent } from 'FakeXMLHttpRequest';
+import FakeXMLHttpRequest from 'FakeXMLHttpRequest';
 
 let xhr: FakeXMLHttpRequest;
 let xmlDocumentConstructor: any;
@@ -75,7 +75,6 @@ QUnit.module('responding', function(hooks) {
   QUnit.test("passes event target as context to onload", function(assert) {
     assert.expect(1);
     let done = assert.async();
-    let context;
 
     xhr.onload = function(ev) {
       assert.deepEqual(this, ev.target);

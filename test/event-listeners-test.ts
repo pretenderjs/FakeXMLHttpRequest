@@ -20,7 +20,7 @@ QUnit.module('event listeners', function(hooks) {
 
   QUnit.test("removing a listener", function(assert) {
     var wasCalled = false;
-    var listener = xhr.addEventListener('somethingHappened', function () {
+    xhr.addEventListener('somethingHappened', function () {
       wasCalled = true;
     });
 

@@ -1,4 +1,4 @@
-import FakeXMLHttpRequest, { FakeEvent } from 'FakeXMLHttpRequest';
+import FakeXMLHttpRequest from 'FakeXMLHttpRequest';
 
 let xhr: FakeXMLHttpRequest;
 
