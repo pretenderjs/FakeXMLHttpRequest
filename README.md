@@ -23,6 +23,7 @@ xhr.respond(200, {"Content-Type": "application/json"}, '{"key":"value"}');
 xhr.status; // 200
 xhr.statusText; // "OK"
 xhr.responseText; // '{"key":"value"}'
+xhr.response; // { key: "value" } (parsed JSON object)
 
 // simulate failed response
 xhr = new FakeXMLHttpRequest();
