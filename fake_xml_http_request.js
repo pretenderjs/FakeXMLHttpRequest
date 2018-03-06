@@ -192,8 +192,7 @@
       Triggers an `onprogress` event with the given parameters.
     */
     _progress: function _progress(lengthComputable, loaded, total) {
-      var event = new _Event('progress');
-      event.target = this;
+      var event = new _Event("progress", false, false, this);
       event.lengthComputable = lengthComputable;
       event.loaded = loaded;
       event.total = total;
