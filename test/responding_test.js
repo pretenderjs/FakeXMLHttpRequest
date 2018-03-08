@@ -61,6 +61,20 @@ test("does not parse the body if it's XML and another content type is set", func
   equal(xhr.responseXML, undefined);
 });
 
+test("respond with ArrayBuffer", function(){
+  var typedArr = new Uint8Array([1, 2, 3, 4, 5])
+  var buffer = typedArr.buffer
+
+  xhr.respond(200, {'Content-Type':'image/png'}, buffer);
+
+  equal(buffer.byteLength, xhr.response.byteLength);
+  var responseTypedArr = new Uint8Array(xhr.response)
+  
+  for(var i = 0; i < typedArr.length; i++) {
+    equal(typedArr[i], responseTypedArr[i]);
+  }
+});
+
 test("calls the onload callback once", function(){
   var wasCalled = 0;
 

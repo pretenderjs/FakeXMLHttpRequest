@@ -25,6 +25,14 @@ _Event.prototype = {
   }
 };
 
+
+var appendBuffer = function(buffer1, buffer2) {
+  var tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
+  tmp.set(new Uint8Array(buffer1), 0);
+  tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
+  return tmp.buffer;
+};
+
 /*
   Used to set the statusText property of an xhr object
 */
@@ -410,6 +418,35 @@ var FakeXMLHttpRequestProto = {
     }
   },
 
+  _writeResponse: function(body) {
+    var chunkSize = this.chunkSize || 10;
+    var index = 0;
+
+    if (typeof body === 'string') {
+      this.responseText = "";
+
+      do {
+        if (this.async) {
+          this._readyStateChange(FakeXMLHttpRequest.LOADING);
+        }
+
+        this.responseText += body.substring(index, index + chunkSize);
+        index += chunkSize;
+      } while (index < body.length);
+    } else if(body instanceof ArrayBuffer) {
+      this.response = new ArrayBuffer(0)
+
+      do {
+        if (this.async) {
+          this._readyStateChange(FakeXMLHttpRequest.LOADING);
+        }
+
+        this.response = appendBuffer(this.response, body.slice(index, body.byteLength));
+        index += chunkSize;
+      } while (index < body.length);
+    }
+  },
+
   /*
     Sets the FakeXMLHttpRequest object's response body and
     if body text is XML, sets responseXML to parsed document
@@ -420,18 +457,7 @@ var FakeXMLHttpRequestProto = {
     verifyHeadersReceived(this);
     verifyResponseBodyType(body);
 
-    var chunkSize = this.chunkSize || 10;
-    var index = 0;
-    this.responseText = "";
-
-    do {
-      if (this.async) {
-        this._readyStateChange(FakeXMLHttpRequest.LOADING);
-      }
-
-      this.responseText += body.substring(index, index + chunkSize);
-      index += chunkSize;
-    } while (index < body.length);
+    this._writeResponse(body);
 
     var type = this.getResponseHeader("Content-Type");
 
@@ -497,9 +523,9 @@ function verifyHeadersReceived(xhr) {
 }
 
 function verifyResponseBodyType(body) {
-    if (typeof body != "string") {
+    if (typeof body != "string" && !(body instanceof ArrayBuffer)) {
         var error = new Error("Attempted to respond to fake XMLHttpRequest with " +
-                             body + ", which is not a string.");
+                             body + ", which is not a string nor an ArrayBuffer.");
         error.name = "InvalidBodyException";
         throw error;
     }
