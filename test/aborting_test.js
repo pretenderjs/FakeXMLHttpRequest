@@ -54,3 +54,31 @@ test("calls the onerror event", function(){
 
   ok(wasCalled);
 });
+
+test("does not call the onload event", function(){
+  var wasCalled = false;
+  xhr.onload = function() {
+    wasCalled = true;
+  };
+
+  xhr.open("POST", "/");
+  xhr.send("data");
+
+  xhr.abort();
+
+  notOk(wasCalled);
+});
+
+test("calls the loadend event", function(){
+  var wasCalled = false;
+  xhr.onloadend = function() {
+    wasCalled = true;
+  };
+
+  xhr.open("POST", "/");
+  xhr.send("data");
+
+  xhr.abort();
+
+  ok(wasCalled);
+});
