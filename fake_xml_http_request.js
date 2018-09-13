@@ -387,7 +387,9 @@
       if (this.readyState == FakeXMLHttpRequest.DONE) {
         this.dispatchEvent(new _Event("load", false, false, this));
       }
-      this.dispatchEvent(new _Event("loadend", false, false, this));
+      if (this.readyState == FakeXMLHttpRequest.UNSENT || this.readyState == FakeXMLHttpRequest.DONE) {
+        this.dispatchEvent(new _Event("loadend", false, false, this));
+      }
     },
 
 
