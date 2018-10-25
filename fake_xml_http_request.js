@@ -243,6 +243,7 @@
       this.password = password;
       this.responseText = null;
       this.responseXML = null;
+      this.responseURL = url;
       this.requestHeaders = {};
       this.sendFlag = false;
       this._readyStateChange(FakeXMLHttpRequest.OPENED);
