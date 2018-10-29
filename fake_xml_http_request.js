@@ -307,16 +307,15 @@
       this.errorFlag = true;
       this.requestHeaders = {};
 
+      this.dispatchEvent(new _Event("abort", false, false, this));
+
       if (this.readyState > FakeXMLHttpRequest.UNSENT && this.sendFlag) {
-        this._readyStateChange(FakeXMLHttpRequest.DONE);
+        this._readyStateChange(FakeXMLHttpRequest.UNSENT);
         this.sendFlag = false;
       }
 
-      this.readyState = FakeXMLHttpRequest.UNSENT;
-
-      this.dispatchEvent(new _Event("abort", false, false, this));
       if (typeof this.onerror === "function") {
-          this.onerror();
+        this.onerror();
       }
     },
 
@@ -387,6 +386,8 @@
 
       if (this.readyState == FakeXMLHttpRequest.DONE) {
         this.dispatchEvent(new _Event("load", false, false, this));
+      }
+      if (this.readyState == FakeXMLHttpRequest.UNSENT || this.readyState == FakeXMLHttpRequest.DONE) {
         this.dispatchEvent(new _Event("loadend", false, false, this));
       }
     },

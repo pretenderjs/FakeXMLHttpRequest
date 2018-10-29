@@ -73,6 +73,18 @@ test("calls the onload callback once", function(){
   strictEqual(wasCalled, 1);
 });
 
+test("calls the onloadend callback once", function(){
+  var wasCalled = 0;
+
+  xhr.onloadend = function(ev){
+    wasCalled += 1;
+  };
+
+  xhr.respond(200, {}, "");
+
+  strictEqual(wasCalled, 1);
+});
+
 test("passes event target as context to onload", function() {
   var context;
   var event;
