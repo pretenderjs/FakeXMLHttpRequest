@@ -48,6 +48,11 @@ test("initializes the responseXML as null", function(){
   equal(xhr.responseXML, null);
 });
 
+test("initializes the responseURL as the opened url", function(){
+  xhr.open('get', '/some/url');
+  equal(xhr.responseURL, '/some/url');
+});
+
 test("initializes the requestHeaders property as empty object", function(){
   xhr.open('get', '/some/url');
   deepEqual(xhr.requestHeaders, {});
