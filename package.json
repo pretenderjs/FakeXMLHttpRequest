@@ -3,6 +3,7 @@
   "version": "2.0.1",
   "description": "test infrastructure for a fake XMLHttpRequest object",
   "main": "fake_xml_http_request.js",
+  "module": "./src/fake-xml-http-request.js",
   "repository": "https://github.com/trek/FakeXMLHttpRequest.git",
   "scripts": {
     "test": "esperanto -i src/fake-xml-http-request.js -t umd -b -n FakeXMLHttpRequest -o fake_xml_http_request.js && ./node_modules/karma/bin/karma start --single-run --browsers PhantomJS"
