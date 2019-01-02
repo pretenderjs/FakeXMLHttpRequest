@@ -9,7 +9,7 @@
     "test": "esperanto -i src/fake-xml-http-request.js -t umd -b -n FakeXMLHttpRequest -o fake_xml_http_request.js && ./node_modules/karma/bin/karma start --single-run --browsers PhantomJS"
   },
   "engines": {
-    "node": "6.* || >= 7.*"
+    "node": ">=4"
   },
   "author": {
     "name": "Trek Glowacki"
