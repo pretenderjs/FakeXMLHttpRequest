@@ -1,4 +1,11 @@
 export default class FakeXMLHttpRequest extends XMLHttpRequest {
+  method: string;
+  url: string;
+  async: boolean;
+  username: string;
+  password: string;
+  requestHeaders: Object;
+
   /*
     Forces a response on to the FakeXMLHttpRequest object.
 
