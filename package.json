@@ -20,7 +20,7 @@
     "esperanto": "^0.6.15",
     "karma": "^1.6.0",
     "karma-chrome-launcher": "^2.0.0",
-    "karma-firefox-launcher": "^1.0.1",
+    "karma-firefox-launcher": "1.0.1",
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-qunit": "^1.2.1",
     "qunitjs": "^1.0.0"
