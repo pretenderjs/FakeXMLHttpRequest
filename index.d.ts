@@ -1,4 +1,7 @@
 export default class FakeXMLHttpRequest extends XMLHttpRequest {
+  requestBody: string;
+
+  requestHeaders: {[k: string]: string};
   /*
     Forces a response on to the FakeXMLHttpRequest object.
 
