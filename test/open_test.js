@@ -43,6 +43,11 @@ test("initializes the responseText as null", function(){
   equal(xhr.responseText, null);
 });
 
+test("initializes the response as null", function(){
+  xhr.open('get', '/some/url');
+  equal(xhr.response, null);
+});
+
 test("initializes the responseXML as null", function(){
   xhr.open('get', '/some/url');
   equal(xhr.responseXML, null);

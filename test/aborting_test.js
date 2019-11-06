@@ -18,6 +18,11 @@ test("sets responseText to null", function(){
   equal(xhr.responseText, null);
 });
 
+test("sets response to null", function(){
+  xhr.abort();
+  equal(xhr.response, null);
+});
+
 test("sets errorFlag to true", function(){
   xhr.abort();
   equal(xhr.errorFlag, true);
