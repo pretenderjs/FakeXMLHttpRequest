@@ -44,6 +44,7 @@ test("sets responseHeaders", function(){
 test("sets body", function(){
   xhr.respond(200, {"Content-Type":"application/json"}, JSON.stringify({a: 'key'}));
   equal(xhr.responseText, '{"a":"key"}');
+  equal(xhr.response, '{"a":"key"}');
 });
 
 test("parses the body if it's XML and no content-type is set", function(){

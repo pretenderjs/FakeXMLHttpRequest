@@ -236,6 +236,7 @@ var FakeXMLHttpRequestProto = {
     this.username = username;
     this.password = password;
     this.responseText = null;
+    this.response = this.responseText;
     this.responseXML = null;
     this.responseURL = url;
     this.requestHeaders = {};
@@ -299,6 +300,7 @@ var FakeXMLHttpRequestProto = {
   abort: function abort() {
     this.aborted = true;
     this.responseText = null;
+    this.response = this.responseText;
     this.errorFlag = true;
     this.requestHeaders = {};
 
@@ -425,6 +427,7 @@ var FakeXMLHttpRequestProto = {
     var chunkSize = this.chunkSize || 10;
     var index = 0;
     this.responseText = "";
+    this.response = this.responseText;
 
     do {
       if (this.async) {
@@ -432,6 +435,7 @@ var FakeXMLHttpRequestProto = {
       }
 
       this.responseText += body.substring(index, index + chunkSize);
+      this.response = this.responseText;
       index += chunkSize;
     } while (index < body.length);
 
