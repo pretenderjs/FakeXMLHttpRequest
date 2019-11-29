@@ -62,6 +62,17 @@ test("does not parse the body if it's XML and another content type is set", func
   equal(xhr.responseXML, undefined);
 });
 
+test("parses the body if it's JSON and the json content type is set", function(){
+  const body = { key: 'value' };
+  xhr.respond(200, {'Content-Type':'application/json'}, JSON.stringify(body));
+  deepEqual(xhr.response, body);
+});
+
+test("does not parse the JSON body when another content type is set", function() {
+  xhr.respond(200, {'Content-Type':'application/xml'}, '{"a":"key"}');
+  equal(xhr.response, undefined);
+});
+
 test("calls the onload callback once", function(){
   var wasCalled = 0;
 
