@@ -22,4 +22,7 @@ test("_progress triggers the onprogress event", function() {
   ok(event.lengthComputable, "ProgressEvent.lengthComputable");
   equal(event.loaded, 10, "ProgressEvent.loaded");
   equal(event.total, 100, "ProgressEvent.total");
+  strictEqual(event.target, upload, "ProgressEvent.target is the upload object");
+  strictEqual(event.target, event.currentTarget,
+    "ProgressEvent.target matches ProgressEvent.currentTarget");
 });

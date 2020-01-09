@@ -16,6 +16,7 @@ var _Event = function Event(type, bubbles, cancelable, target) {
   this.bubbles = bubbles;
   this.cancelable = cancelable;
   this.target = target;
+  this.currentTarget = target;
 };
 
 _Event.prototype = {
@@ -185,8 +186,7 @@ EventedObject.prototype = {
     Triggers an `onprogress` event with the given parameters.
   */
   _progress: function _progress(lengthComputable, loaded, total) {
-    var event = new _Event('progress');
-    event.target = this;
+    var event = new _Event("progress", false, false, this);
     event.lengthComputable = lengthComputable;
     event.loaded = loaded;
     event.total = total;
@@ -376,10 +376,10 @@ var FakeXMLHttpRequestProto = {
     this.readyState = state;
 
     if (typeof this.onreadystatechange == "function") {
-      this.onreadystatechange(new _Event("readystatechange"));
+      this.onreadystatechange(new _Event("readystatechange", false, false, this));
     }
 
-    this.dispatchEvent(new _Event("readystatechange"));
+    this.dispatchEvent(new _Event("readystatechange", false, false, this));
 
     if (this.readyState == FakeXMLHttpRequest.DONE) {
       this.dispatchEvent(new _Event("load", false, false, this));
