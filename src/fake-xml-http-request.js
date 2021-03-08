@@ -205,6 +205,14 @@ function FakeXMLHttpRequest() {
   this.status = 0;
   this.statusText = "";
   this.upload = new EventedObject();
+  this.onabort= null;
+  this.onerror= null;
+  this.onload= null;
+  this.onloadend= null;
+  this.onloadstart= null;
+  this.onprogress= null;
+  this.onreadystatechange= null;
+  this.ontimeout= null;
 }
 
 FakeXMLHttpRequest.prototype = new EventedObject();
