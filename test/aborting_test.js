@@ -1,89 +1,89 @@
 var xhr;
-module("aborting", {
-  setup: function(){
+QUnit.module( "aborting", {
+  beforeEach: function( assert ) {
     xhr = new FakeXMLHttpRequest();
   },
-  teardown: function(){
+  afterEach: function( assert ) {
     window.xhr = undefined;
   }
-});
+} );
 
-test("sets aborted to true", function(){
+QUnit.test( "sets aborted to true", function( assert ) {
   xhr.abort();
-  equal(xhr.aborted, true);
-});
+  assert.equal( xhr.aborted, true );
+} );
 
-test("sets responseText to null", function(){
+QUnit.test( "sets responseText to null", function( assert ) {
   xhr.abort();
-  equal(xhr.responseText, null);
-});
+  assert.equal( xhr.responseText, null );
+} );
 
-test("sets response to null", function(){
+QUnit.test( "sets response to null", function( assert ) {
   xhr.abort();
-  equal(xhr.response, null);
-});
+  assert.equal( xhr.response, null );
+} );
 
-test("sets errorFlag to true", function(){
+QUnit.test( "sets errorFlag to true", function( assert ) {
   xhr.abort();
-  equal(xhr.errorFlag, true);
-});
+  assert.equal( xhr.errorFlag, true );
+} );
 
-test("sets requestHeaders to {}", function(){
+QUnit.test( "sets requestHeaders to {}", function( assert ) {
   xhr.abort();
-  deepEqual(xhr.requestHeaders, {});
-});
+  assert.deepEqual( xhr.requestHeaders, {} );
+} );
 
-test("sets readyState to 0", function(){
+QUnit.test( "sets readyState to 0", function( assert ) {
   xhr.abort();
-  equal(xhr.readyState, 0);
-});
+  assert.equal( xhr.readyState, 0 );
+} );
 
-test("calls the abort event", function(){
+QUnit.test( "calls the abort event", function( assert ) {
   var wasCalled = false;
-  xhr.addEventListener('abort', function(){
+  xhr.addEventListener( "abort", function() {
     wasCalled = true;
-  });
+  } );
 
   xhr.abort();
 
-  ok(wasCalled);
-});
+  assert.ok( wasCalled );
+} );
 
-test("calls the onerror event", function(){
+QUnit.test( "calls the onerror event", function( assert ) {
   var wasCalled = false;
-  xhr.onerror = function(){
+  xhr.onerror = function() {
     wasCalled = true;
   };
 
   xhr.abort();
 
-  ok(wasCalled);
-});
+  assert.ok( wasCalled );
+} );
 
-test("does not call the onload event", function(){
+QUnit.test( "does not call the onload event", function( assert ) {
   var wasCalled = false;
   xhr.onload = function() {
     wasCalled = true;
   };
 
-  xhr.open("POST", "/");
-  xhr.send("data");
+  xhr.open( "POST", "/" );
+  xhr.send( "data" );
 
   xhr.abort();
 
-  notOk(wasCalled);
-});
+  assert.notOk( wasCalled );
+} );
 
-test("calls the loadend event", function(){
+QUnit.test( "calls the loadend event", function( assert ) {
   var wasCalled = false;
   xhr.onloadend = function() {
     wasCalled = true;
   };
 
-  xhr.open("POST", "/");
-  xhr.send("data");
+  xhr.open( "POST", "/" );
+  xhr.send( "data" );
 
   xhr.abort();
 
-  ok(wasCalled);
-});
+  assert.ok( wasCalled );
+} );

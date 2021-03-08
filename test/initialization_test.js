@@ -1,33 +1,33 @@
 var xhr;
-module("FakeXMLHttpRequest construction", {
-  setup: function(){
+QUnit.module( "FakeXMLHttpRequest construction", {
+  beforeEach: function( assert ) {
     xhr = new FakeXMLHttpRequest();
   },
-  teardown: function(){
+  afterEach: function( assert ) {
     xhr = undefined;
   }
-});
+} );
 
-test("readyState is 0", function(){
-  equal(xhr.readyState, 0);
-});
+QUnit.test( "readyState is 0", function( assert ) {
+  assert.equal( xhr.readyState, 0 );
+} );
 
-test("requestHeaders are {}", function(){
-  deepEqual(xhr.requestHeaders, {});
-});
+QUnit.test( "requestHeaders are {}", function( assert ) {
+  assert.deepEqual( xhr.requestHeaders, {} );
+} );
 
-test("requestBody is null", function(){
-  equal(xhr.requestBody, null);
-});
+QUnit.test( "requestBody is null", function( assert ) {
+  assert.equal( xhr.requestBody, null );
+} );
 
-test("status is 0", function(){
-  equal(xhr.status, 0);
-});
+QUnit.test( "status is 0", function( assert ) {
+  assert.equal( xhr.status, 0 );
+} );
 
-test("statusText is empty", function(){
-  equal(xhr.status, '');
-});
+QUnit.test( "statusText is empty", function( assert ) {
+  assert.equal( xhr.status, "" );
+} );
 
-test("withCredentials is false", function(){
-  equal(xhr.withCredentials, false);
-});
+QUnit.test( "withCredentials is false", function( assert ) {
+  assert.equal( xhr.withCredentials, false );
+} );

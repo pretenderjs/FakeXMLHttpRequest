@@ -1,32 +1,39 @@
 // Karma configuration
-// Generated on Sat Oct 05 2013 08:44:16 GMT-0500 (CDT)
+// Generated on Mon Mar 08 2021 12:58:46 GMT-0800 (Pacific Standard Time)
 
 module.exports = function(config) {
   config.set({
 
-    // base path, that will be used to resolve files and exclude
+    // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
 
 
     // frameworks to use
+    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['qunit'],
 
 
     // list of files / patterns to load in the browser
     files: [
-      'fake_xml_http_request.js',
+      './fake_xml_http_request.js',
       'test/**/*_test.js'
     ],
 
 
-    // list of files to exclude
+    // list of files / patterns to exclude
     exclude: [
-      
     ],
 
 
+    // preprocess matching files before serving them to the browser
+    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
+    preprocessors: {
+    },
+
+
     // test results reporter to use
-    // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
+    // possible values: 'dots', 'progress'
+    // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['progress'],
 
 
@@ -47,23 +54,17 @@ module.exports = function(config) {
     autoWatch: true,
 
 
-    // Start these browsers, currently available:
-    // - Chrome
-    // - ChromeCanary
-    // - Firefox
-    // - Opera
-    // - Safari (only Mac)
-    // - PhantomJS
-    // - IE (only Windows)
+    // start these browsers
+    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: ['Chrome', 'PhantomJS'],
 
 
-    // If browser does not capture in given timeout [ms], kill it
-    captureTimeout: 60000,
-
-
     // Continuous Integration mode
-    // if true, it capture browsers, run tests and exit
-    singleRun: false
-  });
-};
+    // if true, Karma captures browsers, runs the tests and exits
+    singleRun: false,
+
+    // Concurrency level
+    // how many browser should be started simultaneous
+    concurrency: Infinity
+  })
+}
