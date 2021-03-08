@@ -1,8 +1,8 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  global.FakeXMLHttpRequest = factory()
-}(this, function () { 'use strict';
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.FakeXMLHttpRequest = factory());
+}(this, (function () { 'use strict';
 
   /**
    * Minimal Event interface implementation
@@ -145,8 +145,7 @@
     for (var i = events.length - 1; i >= 0; i--) {
       _addEventListener(events[i], this);
     }
-  };
-
+  }
   EventedObject.prototype = {
     /*
       Duplicates the behavior of native XMLHttpRequest's addEventListener function
@@ -198,7 +197,7 @@
       event.total = total;
       this.dispatchEvent(event);
     }
-  }
+  };
 
   /*
     Constructor for a fake window.XMLHttpRequest
@@ -274,7 +273,7 @@
       verifyState(this);
 
       if (!/^(get|head)$/i.test(this.method)) {
-        var hasContentTypeHeader = false
+        var hasContentTypeHeader = false;
 
         Object.keys(this.requestHeaders).forEach(function (key) {
           if (key.toLowerCase() === 'content-type') {
@@ -516,8 +515,8 @@
           throw error;
       }
   }
-  var fake_xml_http_request = FakeXMLHttpRequest;
 
-  return fake_xml_http_request;
+  return FakeXMLHttpRequest;
 
-}));
+})));
+//# sourceMappingURL=fake_xml_http_request.js.map

@@ -6,10 +6,9 @@
   "module": "./src/fake-xml-http-request.js",
   "repository": "https://github.com/trek/FakeXMLHttpRequest.git",
   "scripts": {
-    "test": "esperanto -i src/fake-xml-http-request.js -t umd -b -n FakeXMLHttpRequest -o fake_xml_http_request.js && ./node_modules/karma/bin/karma start --single-run --browsers PhantomJS"
-  },
-  "engines": {
-    "node": ">=4"
+    "start": "karma start",
+    "build": "rollup src/fake-xml-http-request.js --file fake_xml_http_request.js --format umd --name 'FakeXMLHttpRequest' --sourcemap true",
+    "test": "npm run build && karma start --single-run --browsers PhantomJS"
   },
   "author": {
     "name": "Trek Glowacki"
@@ -17,12 +16,12 @@
   "homepage": "https://github.com/trek/FakeXMLHttpRequest",
   "license": "MIT",
   "devDependencies": {
-    "esperanto": "^0.6.15",
-    "karma": "^1.6.0",
-    "karma-chrome-launcher": "^2.0.0",
-    "karma-firefox-launcher": "1.0.1",
+    "karma": "^6.1.1",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-firefox-launcher": "^2.1.0",
     "karma-phantomjs-launcher": "^1.0.4",
-    "karma-qunit": "^1.2.1",
-    "qunitjs": "^1.0.0"
+    "karma-qunit": "^4.1.2",
+    "qunit": "^2.14.0",
+    "rollup": "^2.40.0"
   }
 }

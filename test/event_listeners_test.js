@@ -1,31 +1,31 @@
 var xhr;
-module("event listeners", {
-  setup: function(){
+QUnit.module( "event listeners", {
+  beforeEach: function( assert ) {
     xhr = new FakeXMLHttpRequest();
   },
-  teardown: function(){
+  afterEach: function( assert ) {
     window.xhr = undefined;
   }
-});
+} );
 
-test("adding a listener", function(){
+QUnit.test( "adding a listener", function( assert ) {
   var wasCalled = false;
-  xhr.addEventListener('somethingHappened', function(){
+  xhr.addEventListener( "somethingHappened", function() {
     wasCalled = true;
-  });
+  } );
 
-  xhr.dispatchEvent({type: 'somethingHappened'});
+  xhr.dispatchEvent( { type: "somethingHappened" } );
 
-  ok(wasCalled, "the listener was called");
-});
+  assert.ok( wasCalled, "the listener was called" );
+} );
 
-test("removing a listener", function(){
+QUnit.test( "removing a listener", function( assert ) {
   var wasCalled = false;
-  var listener = xhr.addEventListener('somethingHappened', function(){
+  var listener = xhr.addEventListener( "somethingHappened", function() {
     wasCalled = true;
-  });
+  } );
 
-  xhr.dispatchEvent({type: 'somethingHappened'});
+  xhr.dispatchEvent( { type: "somethingHappened" } );
 
-  ok(wasCalled, "the listener was called");
-});
+  assert.ok( wasCalled, "the listener was called" );
+} );
