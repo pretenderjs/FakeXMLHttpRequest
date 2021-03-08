@@ -10,9 +10,6 @@
     "build": "rollup src/fake-xml-http-request.js --file fake_xml_http_request.js --format umd --name 'FakeXMLHttpRequest' --sourcemap true",
     "test": "npm run build && karma start --single-run --browsers PhantomJS"
   },
-  "engines": {
-    "node": ">=14"
-  },
   "author": {
     "name": "Trek Glowacki"
   },
