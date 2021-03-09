@@ -31,3 +31,35 @@ QUnit.test( "statusText is empty", function( assert ) {
 QUnit.test( "withCredentials is false", function( assert ) {
   assert.equal( xhr.withCredentials, false );
 } );
+
+QUnit.test( "onabort is null", function( assert ) {
+  assert.equal( xhr.onabort, null );
+});
+
+QUnit.test( "onerror is null", function( assert ) {
+  assert.equal( xhr.onerror, null );
+});
+
+QUnit.test( "onload is null", function( assert ) {
+  assert.equal( xhr.onload, null );
+});
+
+QUnit.test( "onloadend is null", function( assert ) {
+  assert.equal( xhr.onloadend, null );
+});
+
+QUnit.test( "onloadstart is null", function( assert ) {
+  assert.equal( xhr.onloadstart, null );
+});
+
+QUnit.test( "onprogress is null", function( assert ) {
+  assert.equal( xhr.onprogress, null );
+});
+
+QUnit.test( "onreadystatechange is null", function( assert ) {
+  assert.equal( xhr.onreadystatechange, null );
+});
+
+QUnit.test( "ontimeout is null", function( assert ) {
+  assert.equal( xhr.ontimeout, null );
+});
