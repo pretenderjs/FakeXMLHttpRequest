@@ -1,6 +1,11 @@
 # FakeXMLHttpRequest Changelog
 
-## 2.1.0
+## 2.1.2
+
+* [#59](https://github.com/pretenderjs/FakeXMLHttpRequest/pull/59) Add default values for on* properties
+* [#58](https://github.com/pretenderjs/FakeXMLHttpRequest/pull/58) (chore) Update npm dependencies and remove deprecated packages
+
+## 2.1.1
 
 * [#53](https://github.com/pretenderjs/FakeXMLHttpRequest/pull/53) Alias responseText to response
 * [#48](https://github.com/pretenderjs/FakeXMLHttpRequest/pull/48) Add requestBody and requestHeaders to types declaration
