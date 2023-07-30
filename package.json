@@ -16,6 +16,18 @@
   },
   "homepage": "https://github.com/trek/FakeXMLHttpRequest",
   "license": "MIT",
+  "imports": {
+    "fake-xml-http-request": {
+      "node": "./shims/node.js",
+      "deno": "./shims/deno.js",
+      "default": "./src/fake-xml-http-request.js"
+    }
+  },
+  "exports": {
+    "node": "./shims/node.js",
+    "deno": "./shims/deno.js",
+    "default": "./src/fake-xml-http-request.js"
+  },
   "devDependencies": {
     "karma": "^6.1.1",
     "karma-chrome-launcher": "^3.1.0",
@@ -24,5 +36,10 @@
     "karma-qunit": "^4.1.2",
     "qunit": "^2.14.0",
     "rollup": "^2.40.0"
+  "dependencies": {
+    "@xmldom/xmldom": "^0.8.10"
+  },
+  "volta": {
+    "node": "20.5.0"
   }
 }
