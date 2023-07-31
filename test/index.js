@@ -1,0 +1,9 @@
+import "./aborting_test.js";
+import "./event_listeners_test.js";
+import "./initialization_test.js";
+import "./open_test.js";
+import "./readyStateChange_test.js";
+import "./responding_test.js";
+import "./send_test.js";
+import "./unsafe_headers_test.js";
+import "./upload_test.js";

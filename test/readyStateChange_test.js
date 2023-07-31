@@ -1,30 +1,36 @@
-var xhr, xmlDocumentConstructor;
-QUnit.module( "readyState handling", {
-  beforeEach: function( assert ) {
+import { module, test } from "qunitx";
+import FakeXMLHttpRequest from "fake-xml-http-request";
+
+module("readyState handling", function (hooks) {
+  let xhr;
+  hooks.beforeEach(() => {
     xhr = new FakeXMLHttpRequest();
-  },
-  afterEach: function( assert ) {
+  });
+  hooks.afterEach(() => {
     xhr = undefined;
-  }
-} );
+  });
 
-QUnit.test( "does not call onload and loadend if readyState not UNSENT or DONE", function( assert ) {
-  var wasCalled = 0;
+  test(
+    "does not call onload and loadend if readyState not UNSENT or DONE",
+    function (assert) {
+      let wasCalled = 0;
 
-  xhr.onload = function() {
-    wasCalled += 1;
-  };
-  xhr.onloadend = function( ev ) {
-    wasCalled += 1;
-  };
+      xhr.onload = function () {
+        wasCalled += 1;
+      };
+      xhr.onloadend = function (ev) {
+        wasCalled += 1;
+      };
 
-  [
-    FakeXMLHttpRequest.OPENED,
-    FakeXMLHttpRequest.HEADERS_RECEIVED,
-    FakeXMLHttpRequest.LOADING
-  ].forEach( function( state ) {
-    xhr._readyStateChange( state );
-  } );
+      [
+        FakeXMLHttpRequest.OPENED,
+        FakeXMLHttpRequest.HEADERS_RECEIVED,
+        FakeXMLHttpRequest.LOADING,
+      ].forEach(function (state) {
+        xhr._readyStateChange(state);
+      });
 
-  assert.strictEqual( wasCalled, 0 );
-} );
+      assert.strictEqual(wasCalled, 0);
+    },
+  );
+});

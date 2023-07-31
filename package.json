@@ -1,27 +1,39 @@
 {
   "name": "fake-xml-http-request",
+  "type": "module",
   "version": "2.1.2",
   "description": "test infrastructure for a fake XMLHttpRequest object",
-  "main": "fake_xml_http_request.js",
-  "module": "./src/fake-xml-http-request.js",
-  "repository": "https://github.com/trek/FakeXMLHttpRequest.git",
-  "scripts": {
-    "start": "karma start",
-    "build": "rollup src/fake-xml-http-request.js --file fake_xml_http_request.js --format umd --name 'FakeXMLHttpRequest' --sourcemap true",
-    "test": "npm run build && karma start --single-run --browsers PhantomJS"
-  },
   "author": {
     "name": "Trek Glowacki"
   },
-  "homepage": "https://github.com/trek/FakeXMLHttpRequest",
   "license": "MIT",
+  "homepage": "https://github.com/trek/FakeXMLHttpRequest",
+  "repository": "https://github.com/trek/FakeXMLHttpRequest.git",
+  "imports": {
+    "fake-xml-http-request": {
+      "node": "./shims/node.js",
+      "deno": "./shims/deno.js",
+      "default": "./src/fake-xml-http-request.js"
+    }
+  },
+  "exports": {
+    "node": "./shims/node.js",
+    "deno": "./shims/deno.js",
+    "default": "./src/fake-xml-http-request.js"
+  },
+  "scripts": {
+    "test": "node --test test/index.js && deno test test/index.js && qunitx test/index.js --debug",
+    "format": "deno fmt test"
+  },
   "devDependencies": {
-    "karma": "^6.1.1",
-    "karma-chrome-launcher": "^3.1.0",
-    "karma-firefox-launcher": "^2.1.0",
-    "karma-phantomjs-launcher": "^1.0.4",
-    "karma-qunit": "^4.1.2",
-    "qunit": "^2.14.0",
-    "rollup": "^2.40.0"
+    "qunitx": "^0.9.1",
+    "qunitx-cli": "^0.1.0",
+    "ts-node": "^10.9.1"
+  },
+  "dependencies": {
+    "@xmldom/xmldom": "^0.8.10"
+  },
+  "volta": {
+    "node": "20.5.0"
   }
 }

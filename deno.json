@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "qunitx": "https://esm.sh/qunitx/shims/deno/index.js",
+    "fake-xml-http-request": "./shims/deno.js"
+  }
+}

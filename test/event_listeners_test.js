@@ -1,31 +1,34 @@
-var xhr;
-QUnit.module( "event listeners", {
-  beforeEach: function( assert ) {
+import { module, test } from "qunitx";
+import FakeXMLHttpRequest from "fake-xml-http-request";
+
+module("event listeners", function (hooks) {
+  let xhr;
+  hooks.beforeEach(() => {
     xhr = new FakeXMLHttpRequest();
-  },
-  afterEach: function( assert ) {
-    window.xhr = undefined;
-  }
-} );
+  });
+  hooks.afterEach(() => {
+    xhr = undefined;
+  });
 
-QUnit.test( "adding a listener", function( assert ) {
-  var wasCalled = false;
-  xhr.addEventListener( "somethingHappened", function() {
-    wasCalled = true;
-  } );
+  test("adding a listener", function (assert) {
+    let wasCalled = false;
+    xhr.addEventListener("somethingHappened", function () {
+      wasCalled = true;
+    });
 
-  xhr.dispatchEvent( { type: "somethingHappened" } );
+    xhr.dispatchEvent({ type: "somethingHappened" });
 
-  assert.ok( wasCalled, "the listener was called" );
-} );
+    assert.ok(wasCalled, "the listener was called");
+  });
 
-QUnit.test( "removing a listener", function( assert ) {
-  var wasCalled = false;
-  var listener = xhr.addEventListener( "somethingHappened", function() {
-    wasCalled = true;
-  } );
+  test("removing a listener", function (assert) {
+    let wasCalled = false;
+    let listener = xhr.addEventListener("somethingHappened", function () {
+      wasCalled = true;
+    });
 
-  xhr.dispatchEvent( { type: "somethingHappened" } );
+    xhr.dispatchEvent({ type: "somethingHappened" });
 
-  assert.ok( wasCalled, "the listener was called" );
-} );
+    assert.ok(wasCalled, "the listener was called");
+  });
+});
